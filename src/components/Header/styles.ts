@@ -16,6 +16,7 @@ export const HeaderContainer = styled.header`
       display: flex;
       justify-content: center;
       align-items: center;
+      gap: 0.5rem;
 
       color: ${(props) => props.theme['gray-100']};
 
