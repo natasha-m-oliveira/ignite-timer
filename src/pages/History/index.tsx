@@ -1,23 +1,18 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo } from 'react'
 import { Table, Cell } from '../../components/Table'
 import { Status } from '../../components/Table/styles'
+import { CyclesContext, Cycle } from '../../contexts/CyclesContext'
 import { HistoryContainer } from './styles'
 
-interface Task {
-  name: string
-  minutesAmount: number
-  createdAt: Date | string
-  status: string
-}
-
 export function History() {
-  const [items, setItems] = useState<Task[]>([])
+  const { cycles } = useContext(CyclesContext)
+
   const columns = useMemo(
     () => [
       {
-        id: 'name',
+        id: 'task',
         Header: 'Tarefa',
-        accessor: 'name',
+        accessor: 'task',
       },
       {
         id: 'minutesAmount',
@@ -25,41 +20,35 @@ export function History() {
         accessor: 'minutesAmount',
       },
       {
-        id: 'createdAt',
+        id: 'startDate',
         Header: 'Início',
-        accessor: 'createdAt',
+        accessor: 'startDate',
+        Cell: ({ cell: { value } }: Cell<Date>) => {
+          return value.toISOString()
+        },
       },
       {
         id: 'status',
         Header: 'Status',
-        accessor: 'status',
-        Cell: ({ cell: { value } }: Cell<string>) => {
-          return <Status variant="yellow">{value}</Status>
+        accessor: '',
+        Cell: ({ row }: any) => {
+          if (row?.original?.finishedDate) {
+            return <Status variant="green">Concluído</Status>
+          }
+          if (row?.original?.interruptedDate) {
+            return <Status variant="red">Interrompido</Status>
+          }
+          return <Status variant="yellow">Em andamento</Status>
         },
       },
     ],
     [],
   )
 
-  function getTasks() {
-    setItems([
-      {
-        name: 'Tarefa',
-        minutesAmount: 20,
-        createdAt: new Date().toISOString(),
-        status: 'Em adamento',
-      },
-    ])
-  }
-
-  useEffect(() => {
-    getTasks()
-  }, [])
-
   return (
     <HistoryContainer>
       <h1>Meu histórico</h1>
-      <Table columns={columns} data={items} />
+      <Table columns={columns} data={cycles} />
     </HistoryContainer>
   )
 }

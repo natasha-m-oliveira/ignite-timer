@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import { useTable } from 'react-table'
 
 import { TableContainer } from './styles'
@@ -25,22 +24,43 @@ export function Table({ columns, data }: TableProps) {
     <TableContainer>
       <table {...getTableProps()}>
         <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
-            prepareRow(row)
+          {headerGroups.map((headerGroup) => {
+            const { key, ...restHeaderGroupProps } =
+              headerGroup.getHeaderGroupProps()
+
             return (
-              <tr {...row.getRowProps()} className="border-b border-gray-600">
-                {row.cells.map((cell) => {
+              <tr key={key} {...restHeaderGroupProps}>
+                {headerGroup.headers.map((column) => {
+                  const { key, ...resetColumnProps } = column.getHeaderProps()
+
                   return (
-                    <td {...cell.getCellProps()} className="py-4 px-3">
+                    <th key={key} {...resetColumnProps}>
+                      {column.render('Header')}
+                    </th>
+                  )
+                })}
+              </tr>
+            )
+          })}
+        </thead>
+
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row) => {
+            prepareRow(row)
+
+            const { key, ...restRowProps } = row.getRowProps()
+
+            return (
+              <tr
+                key={key}
+                {...restRowProps}
+                className="border-b border-gray-600"
+              >
+                {row.cells.map((cell) => {
+                  const { key, ...restCelProps } = cell.getCellProps()
+
+                  return (
+                    <td key={key} {...restCelProps} className="py-4 px-3">
                       {cell.render('Cell')}
                     </td>
                   )
