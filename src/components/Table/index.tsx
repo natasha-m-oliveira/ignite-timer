@@ -2,9 +2,12 @@ import { useTable } from 'react-table'
 
 import { TableContainer } from './styles'
 
-export interface Cell<T = any> {
+export interface Cell<T = any, D = object> {
   cell: {
     value: T
+  }
+  row: {
+    original: D
   }
 }
 
