@@ -9,7 +9,7 @@ export function NewCycleForm() {
 
   const taskSuggestions = cycles.reduce(
     (previousValue: string[], currentValue) => {
-      if (!(currentValue.task in previousValue)) {
+      if (!previousValue.includes(currentValue.task)) {
         previousValue.push(currentValue.task)
       }
       return previousValue
