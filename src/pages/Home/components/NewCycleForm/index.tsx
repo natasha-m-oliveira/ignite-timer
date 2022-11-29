@@ -4,8 +4,18 @@ import { FormContainer, MinutesAmountInput, TaskInput } from './styles'
 import { CyclesContext } from '../../../../contexts/CyclesContext'
 
 export function NewCycleForm() {
-  const { activeCycle } = useContext(CyclesContext)
+  const { activeCycle, cycles } = useContext(CyclesContext)
   const { register } = useFormContext()
+
+  const taskSuggestions = cycles.reduce(
+    (previousValue: string[], currentValue) => {
+      if (!(currentValue.task in previousValue)) {
+        previousValue.push(currentValue.task)
+      }
+      return previousValue
+    },
+    [],
+  )
 
   return (
     <FormContainer>
@@ -20,9 +30,9 @@ export function NewCycleForm() {
       />
 
       <datalist id="task-suggestions">
-        <option value="Projeto 1" />
-        <option value="Projeto 2" />
-        <option value="Banana" />
+        {taskSuggestions.map((suggestion) => (
+          <option key={suggestion} value={suggestion} />
+        ))}
       </datalist>
 
       <label htmlFor="minutesAmount">durante</label>
